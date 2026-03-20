@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import {
+  fadeUp,
+  staggerContainer,
+  staggerItem,
+  hoverSpring,
+  viewport,
+} from "@/lib/animations";
 
 interface Testimonial {
   quote: string;
@@ -41,54 +48,55 @@ const testimonials: Testimonial[] = [
 ];
 
 export default function Testimonials() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".fade-up").forEach((el) => {
-              el.classList.add("visible");
-            });
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      id="reviews"
-      ref={sectionRef}
-      className="py-24 md:py-32 bg-cream"
-    >
+    <section id="reviews" className="py-24 md:py-32 bg-cream">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-14">
-          <p className="fade-up text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4">
+        <motion.div
+          className="text-center mb-14"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+        >
+          <motion.p
+            variants={staggerItem}
+            className="text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4"
+          >
             Client Love
-          </p>
-          <h2 className="fade-up font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold">
+          </motion.p>
+          <motion.h2
+            variants={staggerItem}
+            className="font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold"
+          >
             What Our Clients Say
-          </h2>
-        </div>
+          </motion.h2>
+        </motion.div>
 
         {/* Grid */}
-        <div className="stagger-children grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+        >
           {testimonials.map((t) => (
-            <div
+            <motion.div
               key={t.name}
-              className="fade-up bg-warm-white rounded-2xl p-8 md:p-10 relative"
+              variants={staggerItem}
+              className="bg-warm-white rounded-2xl p-8 md:p-10 relative"
             >
-              {/* Quote mark */}
-              <span className="absolute top-6 right-8 font-display text-6xl text-rose/15 leading-none select-none">
+              {/* Quote mark with spring scale */}
+              <motion.span
+                className="absolute top-6 right-8 font-display text-6xl text-rose/15 leading-none select-none"
+                initial={{ scale: 0, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ ...hoverSpring, delay: 0.3 }}
+                viewport={viewport}
+              >
                 &ldquo;
-              </span>
+              </motion.span>
 
               <p className="text-charcoal-light leading-relaxed mb-6 relative z-10">
                 &ldquo;{t.quote}&rdquo;
@@ -106,9 +114,9 @@ export default function Testimonials() {
                   <p className="text-muted text-xs">{t.location}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,44 +1,52 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import {
+  clipReveal,
+  fadeUp,
+  staggerContainer,
+  staggerItem,
+  viewport,
+} from "@/lib/animations";
 
 export default function CTA() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".fade-up").forEach((el) => {
-              el.classList.add("visible");
-            });
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section ref={sectionRef} className="py-24 md:py-32 bg-rose/10">
-      <div className="max-w-3xl mx-auto px-6 text-center stagger-children">
-        <p className="fade-up text-xs tracking-[0.25em] uppercase text-rose font-medium mb-4">
+    <section className="py-24 md:py-32 bg-rose/10">
+      <motion.div
+        className="max-w-3xl mx-auto px-6 text-center"
+        variants={staggerContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={viewport}
+      >
+        <motion.p
+          variants={staggerItem}
+          className="text-xs tracking-[0.25em] uppercase text-rose font-medium mb-4"
+        >
           Let&apos;s Get Started
-        </p>
-        <h2 className="fade-up font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold mb-5">
+        </motion.p>
+
+        <motion.h2
+          variants={clipReveal}
+          className="font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold mb-5"
+        >
           Ready for Your
           <br />
           <span className="italic text-rose">Transformation?</span>
-        </h2>
-        <p className="fade-up text-charcoal-light leading-relaxed mb-8 max-w-lg mx-auto">
+        </motion.h2>
+
+        <motion.p
+          variants={staggerItem}
+          className="text-charcoal-light leading-relaxed mb-8 max-w-lg mx-auto"
+        >
           Book your appointment today and let our expert stylists bring your
           vision to life. Walk-ins are always welcome.
-        </p>
-        <div className="fade-up flex flex-col sm:flex-row items-center justify-center gap-4">
+        </motion.p>
+
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
           <a
             href="#contact"
             className="px-8 py-4 bg-rose text-white font-medium rounded-full hover:bg-rose-light transition-colors duration-200 text-sm"
@@ -51,8 +59,8 @@ export default function CTA() {
           >
             Or call: (732) 555-0234
           </a>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

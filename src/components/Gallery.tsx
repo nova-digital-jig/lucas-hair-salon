@@ -1,6 +1,14 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import {
+  fadeUp,
+  scaleReveal,
+  staggerContainer,
+  staggerItem,
+  hoverSpring,
+  viewport,
+} from "@/lib/animations";
 
 const images = [
   {
@@ -45,45 +53,55 @@ const images = [
   },
 ];
 
+const galleryStagger: typeof staggerContainer = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.15,
+      delayChildren: 0.1,
+    },
+  },
+};
+
 export default function Gallery() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".fade-up").forEach((el) => {
-              el.classList.add("visible");
-            });
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section id="gallery" ref={sectionRef} className="py-24 md:py-32 bg-cream">
+    <section id="gallery" className="py-24 md:py-32 bg-cream">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-14">
-          <p className="fade-up text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4">
+        <motion.div
+          className="text-center mb-14"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+        >
+          <motion.p
+            variants={staggerItem}
+            className="text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4"
+          >
             Our Work
-          </p>
-          <h2 className="fade-up font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold">
+          </motion.p>
+          <motion.h2
+            variants={staggerItem}
+            className="font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold"
+          >
             Style Gallery
-          </h2>
-        </div>
+          </motion.h2>
+        </motion.div>
 
         {/* Bento Grid */}
-        <div className="fade-up grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[220px]">
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[220px]"
+          variants={galleryStagger}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+        >
           {images.map((image, index) => (
-            <div
+            <motion.div
               key={index}
+              variants={scaleReveal}
+              whileHover={{ scale: 1.05, transition: hoverSpring }}
               className={`gallery-item relative overflow-hidden rounded-xl cursor-pointer ${image.span}`}
             >
               <img
@@ -102,9 +120,9 @@ export default function Gallery() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import {
+  fadeUp,
+  slideLeft,
+  staggerContainer,
+  staggerItem,
+  viewport,
+} from "@/lib/animations";
 
 interface ServiceItem {
   name: string;
@@ -50,57 +57,60 @@ const categories: ServiceCategory[] = [
 ];
 
 export default function Services() {
-  const sectionRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".fade-up").forEach((el) => {
-              el.classList.add("visible");
-            });
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
-
   return (
-    <section
-      id="services"
-      ref={sectionRef}
-      className="py-24 md:py-32 bg-warm-white"
-    >
+    <section id="services" className="py-24 md:py-32 bg-warm-white">
       <div className="max-w-4xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <p className="fade-up text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4">
+        <motion.div
+          className="text-center mb-16"
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+        >
+          <motion.p
+            variants={staggerItem}
+            className="text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4"
+          >
             What We Offer
-          </p>
-          <h2 className="fade-up font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold">
+          </motion.p>
+          <motion.h2
+            variants={staggerItem}
+            className="font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold"
+          >
             Our Services
-          </h2>
-        </div>
+          </motion.h2>
+        </motion.div>
 
         {/* Service Menu */}
-        <div className="stagger-children space-y-12">
-          {categories.map((category) => (
-            <div key={category.title} className="fade-up">
+        <div className="space-y-12">
+          {categories.map((category, catIdx) => (
+            <motion.div
+              key={category.title}
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewport}
+            >
               {/* Category Header */}
-              <h3 className="text-xs tracking-[0.3em] uppercase text-rose font-semibold mb-6">
+              <motion.h3
+                variants={slideLeft}
+                className="text-xs tracking-[0.3em] uppercase text-rose font-semibold mb-6"
+              >
                 {category.title}
-              </h3>
+              </motion.h3>
 
               {/* Service Items */}
-              <div className="space-y-4">
+              <motion.div
+                className="space-y-4"
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={viewport}
+              >
                 {category.items.map((item) => (
-                  <div
+                  <motion.div
                     key={item.name}
+                    variants={staggerItem}
                     className="flex items-baseline"
                   >
                     <span className="text-charcoal font-medium text-base">
@@ -110,18 +120,24 @@ export default function Services() {
                     <span className="text-charcoal font-display text-lg font-semibold">
                       {item.price}
                     </span>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
 
               {/* Divider */}
               <div className="mt-8 border-b border-rose/10" />
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* CTA */}
-        <div className="fade-up text-center mt-14">
+        <motion.div
+          className="text-center mt-14"
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={viewport}
+        >
           <p className="text-muted text-sm mb-5">
             Prices may vary based on hair length and complexity.
           </p>
@@ -131,7 +147,7 @@ export default function Services() {
           >
             Book Your Appointment
           </a>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
