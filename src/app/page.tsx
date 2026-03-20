@@ -1,51 +1,25 @@
-"use client";
-
-import { useState, useCallback } from "react";
-import Preloader from "@/components/Preloader";
-import SmoothScroll from "@/components/SmoothScroll";
-import CustomCursor from "@/components/CustomCursor";
-import GrainOverlay from "@/components/GrainOverlay";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
-import Marquee from "@/components/Marquee";
 import Services from "@/components/Services";
-import About from "@/components/About";
 import Gallery from "@/components/Gallery";
+import About from "@/components/About";
 import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
 
 export default function Home() {
-  const [loaded, setLoaded] = useState(false);
-
-  const handlePreloaderComplete = useCallback(() => {
-    setLoaded(true);
-  }, []);
-
   return (
     <>
-      <Preloader onComplete={handlePreloaderComplete} />
-      <SmoothScroll />
-      <CustomCursor />
-      <GrainOverlay />
-
-      <div
-        className={`transition-opacity duration-700 ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
-      >
-        <Navbar />
-        <main>
-          <Hero />
-          <Marquee />
-          <Services />
-          <About />
-          <Gallery />
-          <Testimonials />
-          <CTA />
-        </main>
-        <Footer />
-      </div>
+      <Navbar />
+      <main>
+        <Hero />
+        <Services />
+        <Gallery />
+        <About />
+        <Testimonials />
+        <CTA />
+      </main>
+      <Footer />
     </>
   );
 }

@@ -1,78 +1,64 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+interface Testimonial {
+  quote: string;
+  name: string;
+  location: string;
+  initial: string;
+}
 
-const REVIEWS = [
+const testimonials: Testimonial[] = [
   {
-    text: "The best salon in Woodbridge. Every stylist is talented and professional. I always leave feeling amazing.",
+    quote:
+      "Lucas is the only salon I trust with my color. The balayage they did last visit was absolutely stunning — I get compliments everywhere I go!",
     name: "Maria S.",
-    location: "Woodbridge",
+    location: "Woodbridge, NJ",
+    initial: "M",
   },
   {
-    text: "Lucas and his team transformed my hair. The balayage was absolutely perfect.",
-    name: "Ashley R.",
-    location: "Woodbridge",
+    quote:
+      "I've been coming here for three years now and the service is always consistent. The stylists really listen and the atmosphere is so relaxing.",
+    name: "Ashley T.",
+    location: "Iselin, NJ",
+    initial: "A",
   },
   {
-    text: "Walk-in friendly and the wait is never long. Great prices for the quality.",
-    name: "Priya K.",
-    location: "Edison",
+    quote:
+      "Best haircut I've ever gotten. They took the time to understand exactly what I wanted and delivered beyond my expectations. Highly recommend!",
+    name: "David R.",
+    location: "Avenel, NJ",
+    initial: "D",
   },
   {
-    text: "My whole family comes here. The kids love it too!",
-    name: "Jennifer M.",
-    location: "Iselin",
+    quote:
+      "The keratin treatment completely transformed my hair. It's so smooth and manageable now. The staff is incredibly friendly and professional.",
+    name: "Jennifer L.",
+    location: "Colonia, NJ",
+    initial: "J",
   },
 ];
 
 export default function Testimonials() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      const headingWords = headingRef.current?.querySelectorAll(".word");
-      if (headingWords) {
-        gsap.from(headingWords, {
-          yPercent: 100,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: "top 85%",
-          },
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll(".fade-up").forEach((el) => {
+              el.classList.add("visible");
+            });
+          }
         });
-      }
+      },
+      { threshold: 0.05 }
+    );
 
-      const cards = cardsRef.current?.querySelectorAll(".review-card");
-      if (cards) {
-        gsap.from(cards, {
-          y: 50,
-          opacity: 0,
-          duration: 0.7,
-          stagger: 0.12,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: cardsRef.current,
-            start: "top 80%",
-          },
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -81,54 +67,43 @@ export default function Testimonials() {
       ref={sectionRef}
       className="py-24 md:py-32 bg-cream"
     >
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <div className="overflow-hidden mb-16 md:mb-20">
-          <h2
-            ref={headingRef}
-            className="font-[family-name:var(--font-playfair)] text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight"
-          >
-            <span className="word inline-block">WHAT</span>{" "}
-            <span className="word inline-block">CLIENTS</span>{" "}
-            <span className="word inline-block text-gold">SAY</span>
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Header */}
+        <div className="text-center mb-14">
+          <p className="fade-up text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4">
+            Client Love
+          </p>
+          <h2 className="fade-up font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold">
+            What Our Clients Say
           </h2>
         </div>
 
-        <div
-          ref={cardsRef}
-          className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
-        >
-          {REVIEWS.map((review, i) => (
+        {/* Grid */}
+        <div className="stagger-children grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+          {testimonials.map((t) => (
             <div
-              key={i}
-              className="review-card group p-8 md:p-10 rounded-2xl bg-cream-alt border border-ink/5 hover:border-gold/30 transition-colors duration-500"
+              key={t.name}
+              className="fade-up bg-warm-white rounded-2xl p-8 md:p-10 relative"
             >
-              {/* Stars */}
-              <div className="flex gap-1 mb-6">
-                {[...Array(5)].map((_, j) => (
-                  <svg
-                    key={j}
-                    className="w-5 h-5 text-gold"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                ))}
-              </div>
+              {/* Quote mark */}
+              <span className="absolute top-6 right-8 font-display text-6xl text-rose/15 leading-none select-none">
+                &ldquo;
+              </span>
 
-              <p className="text-lg md:text-xl text-ink leading-relaxed font-medium">
-                &ldquo;{review.text}&rdquo;
+              <p className="text-charcoal-light leading-relaxed mb-6 relative z-10">
+                &ldquo;{t.quote}&rdquo;
               </p>
 
-              <div className="mt-6 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-                  <span className="font-[family-name:var(--font-playfair)] font-bold text-gold text-sm">
-                    {review.name.charAt(0)}
+              <div className="flex items-center gap-3">
+                {/* Avatar initial */}
+                <div className="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center">
+                  <span className="font-display text-rose font-semibold text-sm">
+                    {t.initial}
                   </span>
                 </div>
                 <div>
-                  <div className="font-semibold text-ink">{review.name}</div>
-                  <div className="text-sm text-muted">{review.location}</div>
+                  <p className="text-charcoal font-medium text-sm">{t.name}</p>
+                  <p className="text-muted text-xs">{t.location}</p>
                 </div>
               </div>
             </div>

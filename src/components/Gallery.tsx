@@ -1,128 +1,106 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const IMAGES = [
+const images = [
   {
     src: "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=600&q=80",
-    alt: "Hair styling in progress",
-    span: "md:row-span-2",
+    alt: "Beautiful red hair coloring",
+    span: "col-span-2 row-span-2",
   },
   {
     src: "https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=600&q=80",
-    alt: "Salon hair coloring",
-    span: "",
+    alt: "Blonde highlights styling",
+    span: "col-span-1 row-span-1",
   },
   {
     src: "https://images.unsplash.com/photo-1595476108010-b4d1f102b1b1?w=600&q=80",
     alt: "Professional hair treatment",
-    span: "",
+    span: "col-span-1 row-span-1",
   },
   {
     src: "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&q=80",
-    alt: "Salon interior",
-    span: "md:row-span-2",
+    alt: "Elegant updo hairstyle",
+    span: "col-span-1 row-span-1",
   },
   {
     src: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&q=80",
-    alt: "Hair styling result",
-    span: "",
+    alt: "Natural curly hair styling",
+    span: "col-span-1 row-span-2",
   },
   {
     src: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?w=600&q=80",
-    alt: "Salon experience",
-    span: "",
+    alt: "Salon hair washing station",
+    span: "col-span-1 row-span-1",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=600&q=80",
+    alt: "Balayage hair coloring technique",
+    span: "col-span-1 row-span-1",
+  },
+  {
+    src: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600&q=80",
+    alt: "Long flowing styled hair",
+    span: "col-span-2 row-span-1",
   },
 ];
 
 export default function Gallery() {
   const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const prefersReduced = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      const headingWords = headingRef.current?.querySelectorAll(".word");
-      if (headingWords) {
-        gsap.from(headingWords, {
-          yPercent: 100,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: "top 85%",
-          },
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.querySelectorAll(".fade-up").forEach((el) => {
+              el.classList.add("visible");
+            });
+          }
         });
-      }
+      },
+      { threshold: 0.05 }
+    );
 
-      const items = gridRef.current?.querySelectorAll(".gallery-item");
-      if (items) {
-        gsap.from(items, {
-          y: 60,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: gridRef.current,
-            start: "top 80%",
-          },
-        });
-      }
-    }, sectionRef);
-
-    return () => ctx.revert();
+    if (sectionRef.current) observer.observe(sectionRef.current);
+    return () => observer.disconnect();
   }, []);
 
   return (
-    <section
-      id="gallery"
-      ref={sectionRef}
-      className="py-24 md:py-32 bg-cream-alt"
-    >
-      <div className="max-w-[1400px] mx-auto px-6 md:px-10">
-        <div className="overflow-hidden mb-16 md:mb-20">
-          <h2
-            ref={headingRef}
-            className="font-[family-name:var(--font-playfair)] text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight"
-          >
-            <span className="word inline-block">OUR</span>{" "}
-            <span className="word inline-block text-gold">GALLERY</span>
+    <section id="gallery" ref={sectionRef} className="py-24 md:py-32 bg-cream">
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Section Header */}
+        <div className="text-center mb-14">
+          <p className="fade-up text-xs tracking-[0.25em] uppercase text-muted font-medium mb-4">
+            Our Work
+          </p>
+          <h2 className="fade-up font-display text-3xl md:text-4xl lg:text-5xl text-charcoal font-semibold">
+            Style Gallery
           </h2>
         </div>
 
-        <div
-          ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-[repeat(4,200px)] gap-4"
-        >
-          {IMAGES.map((img, i) => (
+        {/* Bento Grid */}
+        <div className="fade-up grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[180px] md:auto-rows-[220px]">
+          {images.map((image, index) => (
             <div
-              key={i}
-              className={`gallery-item relative overflow-hidden rounded-xl ${img.span}`}
+              key={index}
+              className={`gallery-item relative overflow-hidden rounded-xl cursor-pointer ${image.span}`}
             >
-              <Image
-                src={img.src}
-                alt={img.alt}
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 33vw"
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-full object-cover"
+                loading="lazy"
               />
-              <div className="gallery-overlay absolute inset-0 bg-gold/20 flex items-center justify-center">
-                <span className="text-cream font-[family-name:var(--font-playfair)] text-xl font-bold">
-                  View
-                </span>
+              <div className="gallery-overlay absolute inset-0 bg-charcoal/40 flex items-center justify-center">
+                <div className="text-center">
+                  <p className="text-white font-display text-xl italic">
+                    Lucas
+                  </p>
+                  <p className="text-white/80 text-xs tracking-widest uppercase mt-1">
+                    View
+                  </p>
+                </div>
               </div>
             </div>
           ))}
