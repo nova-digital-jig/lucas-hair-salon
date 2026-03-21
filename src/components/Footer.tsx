@@ -139,7 +139,7 @@ export default function Footer() {
           <p className="text-xs text-white/40">
             Website by{" "}
             <a
-              href="https://nova-digital-nextjs.vercel.app"
+              href="https://nova-agents.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/60 hover:text-rose transition-colors"
